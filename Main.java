@@ -1,93 +1,55 @@
 package org.example;
 
-import  java.util.Scanner;
+import java.text.Format;
+import java.util.Scanner;
 
-class BankAccount {
-    private double balance;
-
-    public BankAccount(double IB) {
-        balance = IB; //initial balance (IB)
-    }
-    public double getBalance() {
-        return balance;
-    }
-
-    public void deposit(double amount) {
-        balance = balance + amount;
-    }
-    public boolean withdraw(double amount) {
-        if (amount <= balance) {
-            balance -= amount;
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
-
-class ATM {
-    private BankAccount account;
-
-    public ATM(BankAccount account) {
-        this.account = account;
-    }
-
-    public void displayMenu() {
-        System.out.println("Welcome to the ATM!");
-        System.out.println("1. Check Balance");
-        System.out.println("2. Deposit");
-        System.out.println("3. Withdraw");
-        System.out.println("4. Exit");
-    }
-    public void PT() {
-        Scanner sc = new Scanner(System.in);
-        int choice;
-        double amount;
-
-        while (true) {
-            displayMenu();
-            System.out.print("Enter your choice: ");
-            choice = sc.nextInt();
-
-            switch (choice) {
-                case 1:
-                    System.out.println("Your balance is: Rs. " + account.getBalance());
-                    break;
-                case 2:
-                    System.out.print("Enter the deposit amount: Rs. ");
-                    amount = sc.nextDouble();
-                    if (amount > 0) {
-                        account.deposit(amount);
-                        System.out.println("Deposit successful.");
-                    } else {
-                        System.out.println("Invalid deposit amount.");
-                    }
-                    break;
-                case 3:
-                    System.out.print("Enter the withdrawal amount: Rs. ");
-                    amount = sc.nextDouble();
-                    if (amount > 0 && account.withdraw(amount)) {
-                        System.out.println("Withdrawal successful.");
-                    } else {
-                        System.out.println("Invalid withdrawal amount or insufficient balance.");
-                    }
-                    break;
-                case 4:
-                    System.out.println("Thank you for using the ATM. Goodbye!");
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
-    }
-}
-
-
-
+class range{
+      public int generate (int max,int min){
+          return (int) (Math.random()*(max-min+1)+min);
+      }
+  }
+//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args){
-        BankAccount userAccount = new BankAccount(100000);
-        ATM atm = new ATM(userAccount);
-        atm.PT();
-        }
+    public static void main(String[] args) {
+      Scanner scan = new Scanner(System.in);
+      range rg = new range();
+      int TA=0;
+      int win=0;
+      while(true){
+          System.out.println("Enter Minimum number:");
+          int min = scan.nextInt();
+          System.out.println("Enter Maximum number:");
+          int max = scan.nextInt();
+          scan.nextLine();
+          int c = rg.generate(max,min);
+          int A=0;
+          while(true){
+              System.out.println("guess a number between "+min+" and "+max+" ");
+              int g = scan.nextInt();
+              A++;
+              if (g>c){
+                  System.out.println("Its Greater ");
+              }
+              else if (g<c){
+                  System.out.println("Its Lower");
+              }
+              else{
+                  System.out.println("Correct answer!!!!!!!!!!!");
+                  win++;
+                  break;
+              }
+          }
+          TA =TA+A;
+          System.out.println("Attempt+"+A);
+          System.out.println("wins+"+win);
+          double winrate = (double) win/TA*100;
+          System.out.printf("your winrate is %.2f%%/n",winrate);
+          System.out.println("Do you want to play again (Y/n)");String PA = scan.nextLine();
+          if(!PA.equalsIgnoreCase("y")){
+              scan.close();
+              System.exit(0);
+          } scan.nextLine();
+      }
     }
+  }
