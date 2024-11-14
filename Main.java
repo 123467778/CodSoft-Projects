@@ -1,93 +1,141 @@
 package org.example;
 
-import  java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-class BankAccount {
-    private double balance;
+class Student {
+    private String name;
+    private int rollNumber;
+    private String grade;
 
-    public BankAccount(double IB) {
-        balance = IB; //initial balance (IB)
-    }
-    public double getBalance() {
-        return balance;
+    public Student(String name, int rollNumber, String grade) {
+        this.name = name;
+        this.rollNumber = rollNumber;
+        this.grade = grade;
     }
 
-    public void deposit(double amount) {
-        balance = balance + amount;
+    public int getRollNumber() {
+        return rollNumber;
     }
-    public boolean withdraw(double amount) {
-        if (amount <= balance) {
-            balance -= amount;
-            return true;
-        } else {
-            return false;
-        }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + ", Roll Number: " + rollNumber + ", Grade: " + grade;
     }
 }
 
-class ATM {
-    private BankAccount account;
+class StudentManagementSystem {
+    private List<Student> students;
 
-    public ATM(BankAccount account) {
-        this.account = account;
+    public StudentManagementSystem() {
+        students = new ArrayList<>();
     }
 
-    public void displayMenu() {
-        System.out.println("Welcome to the ATM!");
-        System.out.println("1. Check Balance");
-        System.out.println("2. Deposit");
-        System.out.println("3. Withdraw");
-        System.out.println("4. Exit");
+    public void addStudent(Student student) {
+        students.add(student);
     }
-    public void PT() {
-        Scanner sc = new Scanner(System.in);
-        int choice;
-        double amount;
+
+    public boolean removeStudent(int rollNumber) {
+        for (Student student : students) {
+            if (student.getRollNumber() == rollNumber) {
+                students.remove(student);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Student searchStudent(int rollNumber) {
+        for (Student student : students) {
+            if (student.getRollNumber() == rollNumber) {
+                return student;
+            }
+        }
+        return null;
+    }
+
+    public List<Student> getAllStudents() {
+        return students;
+    }
+}
+
+public class Main{
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        StudentManagementSystem sms = new StudentManagementSystem();
 
         while (true) {
-            displayMenu();
+            
+            System.out.println("1. Add Student");
+            System.out.println("2. Remove Student");
+            System.out.println("3. Search Student");
+            System.out.println("4. Display All Students");
+            System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
-            choice = sc.nextInt();
+            int choice = scanner.nextInt();
 
             switch (choice) {
                 case 1:
-                    System.out.println("Your balance is: Rs. " + account.getBalance());
+                    scanner.nextLine();
+                    System.out.print("Enter student name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter roll number: ");
+                    int rollNumber = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Enter grade: ");
+                    String grade = scanner.nextLine();
+
+                    Student newStudent = new Student(name, rollNumber, grade);
+                    sms.addStudent(newStudent);
+                    System.out.println("Student added.");
                     break;
+
                 case 2:
-                    System.out.print("Enter the deposit amount: Rs. ");
-                    amount = sc.nextDouble();
-                    if (amount > 0) {
-                        account.deposit(amount);
-                        System.out.println("Deposit successful.");
+                    System.out.print("Enter roll number of student to remove: ");
+                    int rollToRemove = scanner.nextInt();
+                    boolean removed = sms.removeStudent(rollToRemove);
+                    if (removed) {
+                        System.out.println("Student removed.");
                     } else {
-                        System.out.println("Invalid deposit amount.");
+                        System.out.println("Student not found.");
                     }
                     break;
+
                 case 3:
-                    System.out.print("Enter the withdrawal amount: Rs. ");
-                    amount = sc.nextDouble();
-                    if (amount > 0 && account.withdraw(amount)) {
-                        System.out.println("Withdrawal successful.");
+                    System.out.print("Enter roll number of student to search: ");
+                    int rollToSearch = scanner.nextInt();
+                    Student searchedStudent = sms.searchStudent(rollToSearch);
+                    if (searchedStudent != null) {
+                        System.out.println("Student found:");
+                        System.out.println(searchedStudent);
                     } else {
-                        System.out.println("Invalid withdrawal amount or insufficient balance.");
+                        System.out.println("Student not found.");
                     }
                     break;
+
                 case 4:
-                    System.out.println("Thank you for using the ATM. Goodbye!");
-                    return;
+                    List<Student> allStudents = sms.getAllStudents();
+                    if (allStudents.isEmpty()) {
+                        System.out.println("No students to display.");
+                    } else {
+                        System.out.println("All Students:");
+                        for (Student student : allStudents) {
+                            System.out.println(student);
+                        }
+                    }
+                    break;
+
+                case 5:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("Invalid choice. Please choose again.");
+                    break;
             }
         }
     }
 }
-
-
-
-public class Main {
-    public static void main(String[] args){
-        BankAccount userAccount = new BankAccount(100000);
-        ATM atm = new ATM(userAccount);
-        atm.PT();
-        }
-    }
